@@ -1,0 +1,9 @@
+{
+  "name": "trustin-paperclip",
+  "version": "0.1.0",
+  "description": "Operate Paperclip — the control plane for autonomous AI companies. Create companies, manage agents, track issues, handle approvals, monitor costs, and run diagnostics via the paperclipai CLI.",
+  "author": {
+    "name": "Anas Sahel"
+  },
+  "keywords": ["paperclip", "ai-company", "agents", "control-plane", "orchestration"]
+}
