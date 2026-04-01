@@ -1,0 +1,9 @@
+{
+  "name": "trustin",
+  "version": "1.0.0",
+  "description": "Trustin AI plugin suite. Includes Paperclip (control plane for autonomous AI companies) and GStack Mini (lightweight YC Office Hours with 70% token reduction).",
+  "author": {
+    "name": "Anas Sahel"
+  },
+  "keywords": ["trustin", "paperclip", "gstack", "ai-company", "office-hours", "startup", "agents"]
+}

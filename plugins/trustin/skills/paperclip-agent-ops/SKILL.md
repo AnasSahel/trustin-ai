@@ -1,5 +1,5 @@
 ---
-name: agent-ops
+name: paperclip-agent-ops
 description: >
   Manage AI agents in a Paperclip company — hire, configure, organize, monitor, pause, and
   troubleshoot agents. Use this skill when the user wants to "hire an agent", "add a developer",

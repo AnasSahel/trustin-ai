@@ -1,5 +1,5 @@
 ---
-name: board-ops
+name: paperclip-board-ops
 description: >
   Board operator workflows for Paperclip — dashboard monitoring, approval handling, activity
   audit, and governance. Use this skill when the user wants to "check the dashboard", "review

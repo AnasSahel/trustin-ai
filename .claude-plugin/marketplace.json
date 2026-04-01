@@ -5,9 +5,9 @@
   },
   "plugins": [
     {
-      "name": "trustin-paperclip",
-      "source": "./plugins/trustin-paperclip",
-      "description": "Operate Paperclip — the control plane for autonomous AI companies"
+      "name": "trustin",
+      "source": "./plugins/trustin",
+      "description": "Trustin AI plugin suite — Paperclip (autonomous AI company control plane) and GStack Mini (lightweight YC Office Hours)"
     }
   ]
 }

@@ -1,5 +1,5 @@
 ---
-name: cost-control
+name: paperclip-cost-control
 description: >
   Monitor and manage costs and budgets in a Paperclip company. Use this skill when the user asks
   about "budget", "costs", "spend", "token usage", "burn rate", "how much are agents spending",

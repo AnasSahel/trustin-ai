@@ -1,5 +1,5 @@
 ---
-name: diagnostics
+name: paperclip-diagnostics
 description: >
   Diagnose and fix Paperclip instance issues — health checks, heartbeat debugging, adapter
   troubleshooting, and environment validation. Use this skill when the user says "paperclip is

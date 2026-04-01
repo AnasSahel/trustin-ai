@@ -1,5 +1,5 @@
 ---
-name: issue-ops
+name: paperclip-issue-ops
 description: >
   Create, assign, track, and manage issues (tasks) in a Paperclip company. Use this skill when
   the user wants to "create an issue", "create a task", "assign a task", "check task status",

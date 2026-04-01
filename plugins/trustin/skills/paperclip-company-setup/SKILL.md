@@ -1,5 +1,5 @@
 ---
-name: company-setup
+name: paperclip-company-setup
 description: >
   Bootstrap and configure a Paperclip company from scratch. Use this skill when the user wants to
   "create a company", "set up a new AI company", "bootstrap a Paperclip instance", "configure a
