@@ -17,6 +17,8 @@ Each plugin has its own `README.md` with a detailed breakdown.
 /plugin install sailpoint@trustin-ai
 ```
 
+> **Troubleshooting** — if `/plugin install <name>@trustin-ai` returns `Plugin "<name>" not found in any marketplace`, the running Claude Code session is caching an older view of the marketplace. Fully restart Claude Code, then retry the install. `/plugin marketplace remove` + re-add is **not** always enough.
+
 ## Versioning — per-plugin monorepo tags
 
 Each plugin evolves at its own cadence. Tags follow the Go-modules monorepo convention:
