@@ -1,0 +1,35 @@
+{
+  "skill_name": "sailpoint-transform-debug",
+  "evals": [
+    {
+      "id": 1,
+      "name": "lookup-case-mismatch",
+      "prompt": "My department lookup is broken. Input is 'eng' (from the HR feed) but I'm getting 'Unknown Department' instead of 'Engineering'.\n\nTransform:\n```json\n{\n  \"name\": \"Identity - Lookup Department\",\n  \"type\": \"lookup\",\n  \"attributes\": {\n    \"table\": {\n      \"ENG\": \"Engineering\",\n      \"SAL\": \"Sales\",\n      \"default\": \"Unknown Department\"\n    }\n  }\n}\n```\n\nExpected: 'Engineering'. Actual: 'Unknown Department'.",
+      "expected_output": "Diagnosis names case-sensitivity. Trace shows 'eng' doesn't match 'ENG'. Fix wraps input in upper or lower transform."
+    },
+    {
+      "id": 2,
+      "name": "replace-as-filter-bug",
+      "prompt": "My email transform returns an empty string for users whose personal_email isn't @acme.com, but it should fall through to the next branch. What's wrong?\n\n```json\n{\n  \"name\": \"Identity - Get Email\",\n  \"type\": \"firstValid\",\n  \"attributes\": {\n    \"values\": [\n      {\n        \"type\": \"replace\",\n        \"attributes\": {\n          \"regex\": \"^(?!.*@acme\\\\.com$).*$\",\n          \"replacement\": \"\",\n          \"input\": { \"type\": \"accountAttribute\", \"attributes\": { \"attributeName\": \"personal_email\", \"sourceName\": \"hr-workday\" } }\n        }\n      },\n      { \"type\": \"accountAttribute\", \"attributes\": { \"attributeName\": \"mail\", \"sourceName\": \"Active Directory\" } }\n    ]\n  }\n}\n```\n\nFor input personal_email='jane@gmail.com', expected: AD mail. Actual: empty string ''.",
+      "expected_output": "Diagnosis identifies replace-as-filter producing '' which firstValid treats as valid. Fix uses conditional with negativeCondition: null instead."
+    },
+    {
+      "id": 3,
+      "name": "datecompare-no-ignoreerrors",
+      "prompt": "My LCS transform is killing the entire identity refresh whenever endDate is missing. Stack trace says 'cannot parse null date'. Help!\n\n```json\n{\n  \"name\": \"Identity - Compute LCS\",\n  \"type\": \"firstValid\",\n  \"attributes\": {\n    \"values\": [\n      { \"type\": \"dateCompare\", \"attributes\": { \"firstDate\": \"now\", \"operator\": \"GT\", \"positiveCondition\": \"terminated\", \"secondDate\": { \"type\": \"accountAttribute\", \"attributes\": { \"attributeName\": \"endDate\", \"sourceName\": \"hr-csv\" } } } },\n      { \"type\": \"static\", \"attributes\": { \"value\": \"active\" } }\n    ]\n  }\n}\n```",
+      "expected_output": "Diagnosis: missing ignoreErrors:true on firstValid. dateCompare throws on null, kills refresh. Fix adds ignoreErrors:true."
+    },
+    {
+      "id": 4,
+      "name": "wrong-source-name",
+      "prompt": "Transform suddenly returns null for everyone after our AD source got renamed to 'Corp AD'. Old name was 'Active Directory'. Here's the transform:\n\n```json\n{\n  \"name\": \"Identity - AD Manager DN\",\n  \"type\": \"accountAttribute\",\n  \"attributes\": {\n    \"sourceName\": \"Active Directory\",\n    \"attributeName\": \"manager\"\n  }\n}\n```\n\nExpected: manager DN. Actual: null.",
+      "expected_output": "Diagnosis: sourceName outdated. Fix updates to 'Corp AD'. Mentions sourceId would be more stable."
+    },
+    {
+      "id": 5,
+      "name": "substring-off-by-one",
+      "prompt": "I want the first 3 chars of the employee number for a department code, but I'm getting 4 chars.\n\n```json\n{\n  \"name\": \"Account - Extract Dept Prefix\",\n  \"type\": \"substring\",\n  \"attributes\": {\n    \"begin\": 0,\n    \"end\": 4,\n    \"input\": { \"type\": \"identityAttribute\", \"attributes\": { \"name\": \"employeeNumber\" } }\n  }\n}\n```\n\nInput: '12345678'. Expected: '123'. Actual: '1234'.",
+      "expected_output": "Diagnosis: end is exclusive in substring (chars 0,1,2,3 = 4 chars). Fix sets end=3."
+    }
+  ]
+}

@@ -5,9 +5,19 @@
   },
   "plugins": [
     {
-      "name": "trustin",
-      "source": "./plugins/trustin",
-      "description": "Trustin AI plugin suite — Paperclip (autonomous AI company control plane) and GStack Mini (lightweight YC Office Hours)"
+      "name": "onelogin",
+      "source": "./plugins/onelogin",
+      "description": "OneLogin operations — helpdesk, JML, admin, and audit agents powered by the OneLogin MCP server"
+    },
+    {
+      "name": "sailpoint",
+      "source": "./plugins/sailpoint",
+      "description": "SailPoint ISC toolkit — transform authoring skills, reporting agents, and OSS Terraform provider maintenance"
+    },
+    {
+      "name": "workflow",
+      "source": "./plugins/workflow",
+      "description": "Workflow slash commands for engineers — terraform plan risk review, bulk GitHub issue creation, and Dokploy log triage"
     }
   ]
 }

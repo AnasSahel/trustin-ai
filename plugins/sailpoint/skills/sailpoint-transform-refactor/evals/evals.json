@@ -1,0 +1,35 @@
+{
+  "skill_name": "sailpoint-transform-refactor",
+  "evals": [
+    {
+      "id": 1,
+      "name": "duplicated-account-reads",
+      "prompt": "Clean up this transform — the same accountAttribute call to hr-csv.endDate appears 4 times.\n\n```json\n{\n  \"name\": \"Identity - LCS\",\n  \"type\": \"firstValid\",\n  \"attributes\": {\n    \"ignoreErrors\": true,\n    \"values\": [\n      { \"type\": \"dateCompare\", \"attributes\": { \"firstDate\": \"now\", \"operator\": \"GT\", \"positiveCondition\": \"archived\", \"secondDate\": { \"type\": \"dateMath\", \"attributes\": { \"expression\": \"+60d\", \"input\": { \"type\": \"accountAttribute\", \"attributes\": { \"attributeName\": \"endDate\", \"sourceName\": \"hr-csv\" } } } } } },\n      { \"type\": \"dateCompare\", \"attributes\": { \"firstDate\": \"now\", \"operator\": \"GT\", \"positiveCondition\": \"terminated\", \"secondDate\": { \"type\": \"accountAttribute\", \"attributes\": { \"attributeName\": \"endDate\", \"sourceName\": \"hr-csv\" } } } },\n      { \"type\": \"dateCompare\", \"attributes\": { \"firstDate\": \"now\", \"operator\": \"GTE\", \"positiveCondition\": \"offboarding\", \"secondDate\": { \"type\": \"dateMath\", \"attributes\": { \"expression\": \"-15d\", \"input\": { \"type\": \"accountAttribute\", \"attributes\": { \"attributeName\": \"endDate\", \"sourceName\": \"hr-csv\" } } } } } },\n      { \"type\": \"static\", \"attributes\": { \"value\": \"active\" } }\n    ]\n  }\n}\n```",
+      "expected_output": "Extracts 'Account - HR - Get End Date' as a named sub-transform, references it 3 times. Behavior preserved."
+    },
+    {
+      "id": 2,
+      "name": "velocity-multibranch",
+      "prompt": "This transform's Velocity is unmaintainable. Refactor to native types.\n\n```json\n{\n  \"name\": \"Identity - Compute Staff Type\",\n  \"type\": \"static\",\n  \"attributes\": {\n    \"contract\": { \"type\": \"identityAttribute\", \"attributes\": { \"name\": \"contractType\" } },\n    \"company\": { \"type\": \"identityAttribute\", \"attributes\": { \"name\": \"companyCode\" } },\n    \"value\": \"#if($contract == 'CDI' || $contract == 'CDD')Internal#elseif($contract == 'CTR' && $company == 'EXT')External#elseif($contract == 'CTR')Contractor#elseif($contract == 'INT')Intern#{else}Unknown#end\"\n  }\n}\n```",
+      "expected_output": "Refactored to firstValid with conditional or lookup branches. Behavior preserved across all 5 input combinations."
+    },
+    {
+      "id": 3,
+      "name": "replace-as-filter-refactor",
+      "prompt": "Refactor this — the replace-as-filter trick is producing empty strings instead of skipping when the email isn't @acme.com.\n\n```json\n{\n  \"name\": \"Identity - Get Acme Email\",\n  \"type\": \"firstValid\",\n  \"attributes\": {\n    \"values\": [\n      { \"type\": \"accountAttribute\", \"attributes\": { \"attributeName\": \"mail\", \"sourceName\": \"Active Directory\" } },\n      {\n        \"type\": \"replace\",\n        \"attributes\": {\n          \"regex\": \"^(?!.*@acme\\\\.com$).*$\",\n          \"replacement\": \"\",\n          \"input\": { \"type\": \"accountAttribute\", \"attributes\": { \"attributeName\": \"personal_email\", \"sourceName\": \"hr-workday\" } }\n        }\n      }\n    ]\n  }\n}\n```\n\nThis is BOTH a refactor AND a behavior fix — disclose that.",
+      "expected_output": "Diagnosis flags this as behavior change, not pure refactor. Asks user to confirm or proceeds with conditional + negativeCondition: null fix."
+    },
+    {
+      "id": 4,
+      "name": "deeply-nested-displayname",
+      "prompt": "Flatten this — it's 5 levels deep and unreadable.\n\n```json\n{\n  \"name\": \"Identity - DisplayName\",\n  \"type\": \"concat\",\n  \"attributes\": {\n    \"values\": [\n      { \"type\": \"upper\", \"attributes\": { \"input\": { \"type\": \"substring\", \"attributes\": { \"begin\": 0, \"end\": 1, \"input\": { \"type\": \"normalizeNames\", \"attributes\": { \"input\": { \"type\": \"identityAttribute\", \"attributes\": { \"name\": \"firstname\" } } } } } } } },\n      \". \",\n      { \"type\": \"normalizeNames\", \"attributes\": { \"input\": { \"type\": \"identityAttribute\", \"attributes\": { \"name\": \"lastname\" } } } }\n    ]\n  }\n}\n```",
+      "expected_output": "Extracts inner pipelines into named sub-transforms (e.g. 'Identity - Get Normalized First Initial', 'Identity - Get Normalized Last Name'). Root concat now references them. 2 levels max."
+    },
+    {
+      "id": 5,
+      "name": "concat-to-join",
+      "prompt": "This concat with literal separators is noisy. Can it be cleaner?\n\n```json\n{\n  \"name\": \"Account - Build Full Address\",\n  \"type\": \"concat\",\n  \"attributes\": {\n    \"values\": [\n      { \"type\": \"identityAttribute\", \"attributes\": { \"name\": \"street\" } },\n      \", \",\n      { \"type\": \"identityAttribute\", \"attributes\": { \"name\": \"city\" } },\n      \", \",\n      { \"type\": \"identityAttribute\", \"attributes\": { \"name\": \"postalCode\" } },\n      \", \",\n      { \"type\": \"identityAttribute\", \"attributes\": { \"name\": \"country\" } }\n    ]\n  }\n}\n```",
+      "expected_output": "Refactored to join with separator: ', '. Cleaner structure, same output."
+    }
+  ]
+}

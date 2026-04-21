@@ -1,0 +1,17 @@
+{
+  "name": "onelogin",
+  "version": "0.1.0",
+  "description": "OneLogin operations toolkit — agents for helpdesk (user lookup, password/MFA reset, account unlock), JML (joiner/leaver/mover), admin (apps, smart hooks), and audit (access review, MFA coverage, app usage, incidents, directory sync). Powered by the OneLogin MCP server.",
+  "author": {
+    "name": "Anas Sahel"
+  },
+  "keywords": [
+    "onelogin",
+    "iam",
+    "identity",
+    "helpdesk",
+    "audit",
+    "jml",
+    "mfa"
+  ]
+}

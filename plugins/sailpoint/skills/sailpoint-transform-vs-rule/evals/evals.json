@@ -1,0 +1,35 @@
+{
+  "skill_name": "sailpoint-transform-vs-rule",
+  "evals": [
+    {
+      "id": 1,
+      "name": "simple-lookup",
+      "prompt": "I need to map our 5 internal department codes to full department names. Should I use a transform or a rule?",
+      "expected_output": "Verdict: Transform. Reasoning: pure function, expressible as lookup. Starting point: lookup transform."
+    },
+    {
+      "id": 2,
+      "name": "external-api-call",
+      "prompt": "I need to enrich our identities with a 'manager_email' attribute, but the manager DN isn't directly on the HR record — I need to query our internal LDAP server (not connected to ISC) to look it up. Transform or rule?",
+      "expected_output": "Verdict: Cloud Rule. Reasoning: external system call (not an ISC source) requires HTTP/code. Mentions Expert Services deployment."
+    },
+    {
+      "id": 3,
+      "name": "complex-but-expressible",
+      "prompt": "I need to compute lifecycle state with this logic: if today > endDate+60: archived; if today > endDate: terminated; if today between -15d of endDate and endDate: offboarding; if today >= startDate: active; else: scheduled. Dates can be missing. Transform or rule?",
+      "expected_output": "Verdict: Transform. Reasoning: expressible as firstValid + dateCompare chain (~4 levels). Starting point: nested firstValid with ignoreErrors."
+    },
+    {
+      "id": 4,
+      "name": "side-effects-multi-attribute",
+      "prompt": "When an identity's contract type changes from 'CDD' to 'CDI', I need to: (1) update their lifecycleState to 'active-permanent', (2) clear their endDate field, (3) trigger a notification to HR. Transform or rule?",
+      "expected_output": "Verdict: Cloud Rule (or workflow). Reasoning: side effects across multiple attributes plus external notification — not a pure function. Mentions BeforeProvisioning rule or workflow as alternative."
+    },
+    {
+      "id": 5,
+      "name": "transform-plus-rule",
+      "prompt": "I want to compute the displayName as 'lastname firstname' (transform-style stuff), BUT for VIP employees (flagged in our HR system but not currently on the identity attribute), I need to prefix with '⭐ '. The VIP flag requires querying our HR system's REST API. What's the right structure?",
+      "expected_output": "Verdict: Transform + Rule. Reasoning: bulk is transform-territory but VIP lookup needs external API call -> cloud rule referenced from inside the transform."
+    }
+  ]
+}

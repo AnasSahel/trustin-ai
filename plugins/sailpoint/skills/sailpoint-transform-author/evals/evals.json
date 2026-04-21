@@ -1,0 +1,40 @@
+{
+  "skill_name": "sailpoint-transform-author",
+  "evals": [
+    {
+      "id": 1,
+      "name": "normalize-lastname-nl",
+      "prompt": "Build me an ISC transform that takes an employee's last name from the HR source (source 'hr-workday', attribute 'family_name') and normalizes it: strip accents, and title-case it. Handle the case where the HR value is missing by falling back to the AD account's 'sn' attribute.",
+      "expected_output": "firstValid wrapping two accountAttribute inputs, with normalizeNames applied (either on the firstValid output or as outer transform). Must have a sensible name and handle missing HR value.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "lookup-department-code",
+      "prompt": "I need a transform that maps our department codes to full department names. Codes: ENG = Engineering, SAL = Sales, MKT = Marketing, HR = Human Resources, FIN = Finance. If the code isn't in the list, return 'Unknown Department'.",
+      "expected_output": "Single lookup transform with table containing all 5 codes plus default='Unknown Department'. No unnecessary wrappers.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "name": "modify-existing-email-fallback",
+      "prompt": "Here's an existing transform:\n\n```json\n{\n  \"name\": \"Identity - Get Primary Email\",\n  \"type\": \"firstValid\",\n  \"attributes\": {\n    \"values\": [\n      { \"type\": \"accountAttribute\", \"attributes\": { \"attributeName\": \"mail\", \"sourceName\": \"Active Directory\" } },\n      { \"type\": \"accountAttribute\", \"attributes\": { \"attributeName\": \"email\", \"sourceName\": \"hr-workday\" } }\n    ]\n  }\n}\n```\n\nAdd a third fallback: check the 'personal_email' attribute from the 'hr-workday' source, but only if it ends with '@acme.com' (strip any others). Also add ignoreErrors because we had an incident where a malformed AD attribute killed the whole refresh.",
+      "expected_output": "Preserves name and first two values; adds third fallback with replaceAll or similar to filter non-acme emails (regex approach); adds ignoreErrors: true at firstValid level. Minimal change — does not restructure existing values.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "name": "lcs-date-logic",
+      "prompt": "I need to compute a lifecycle state based on dates. Logic: if today is more than 30 days after endDate (from source 'hr-workday', attribute 'end_date'), state is 'archived'. If today is past endDate but within 30 days, state is 'terminated'. If today is between startDate and endDate, state is 'active'. If today is before startDate, state is 'scheduled'. Dates might be missing — don't blow up.",
+      "expected_output": "firstValid with ignoreErrors:true containing 3-4 dateCompare children in priority order, with a terminal static for 'scheduled'. Uses dateMath for the +30d window. Handles bad data gracefully.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "name": "account-username-policy",
+      "prompt": "Build a transform for an account creation policy: username should be first letter of firstname (lowercase) + lastname (lowercase, accents stripped) + 2 random digits. Example: Élise Dupont → edupont47",
+      "expected_output": "concat of: lowered substring of firstname (0,1), lowered+decomposeDiacriticalMarks lastname, and randomNumeric length 2. Nesting should be reasonable (not crazy deep).",
+      "files": []
+    }
+  ]
+}

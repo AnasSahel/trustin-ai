@@ -1,0 +1,35 @@
+{
+  "skill_name": "sailpoint-transform-explain",
+  "evals": [
+    {
+      "id": 1,
+      "name": "flat-normalize",
+      "prompt": "What does this transform do?\n\n```json\n{\n  \"name\": \"Identity - Normalize First Name\",\n  \"type\": \"normalizeNames\",\n  \"attributes\": {}\n}\n```",
+      "expected_output": "Brief TL;DR + flow diagram + walkthrough explaining normalizeNames does title-case + strip diacritics, that empty attributes means input flows from mapping context."
+    },
+    {
+      "id": 2,
+      "name": "email-fallback-chain",
+      "prompt": "I inherited this transform — what does it do and what should I know?\n\n```json\n{\n  \"name\": \"Identity - Get Valid Email\",\n  \"type\": \"firstValid\",\n  \"attributes\": {\n    \"values\": [\n      { \"type\": \"accountAttribute\", \"attributes\": { \"attributeName\": \"mail\", \"sourceName\": \"Active Directory\" } },\n      { \"type\": \"accountAttribute\", \"attributes\": { \"attributeName\": \"work_email\", \"sourceName\": \"hr-workday\" } },\n      \"\"\n    ]\n  }\n}\n```",
+      "expected_output": "TL;DR fallback chain AD->Workday->empty. Flow diagram. Walkthrough notes empty terminator avoids null but only safe at outermost."
+    },
+    {
+      "id": 3,
+      "name": "lcs-date-tree",
+      "prompt": "Explain this transform — it's the lifecycle state computation for our contractors and I need to document it.\n\n```json\n{\n  \"name\": \"Identity - Contractor - Compute LCS\",\n  \"type\": \"firstValid\",\n  \"attributes\": {\n    \"ignoreErrors\": true,\n    \"values\": [\n      { \"type\": \"dateCompare\", \"attributes\": { \"firstDate\": \"now\", \"operator\": \"GT\", \"positiveCondition\": \"archived\", \"secondDate\": { \"type\": \"dateMath\", \"attributes\": { \"expression\": \"+60d\", \"input\": { \"type\": \"accountAttribute\", \"attributes\": { \"attributeName\": \"endDate\", \"sourceName\": \"hr-csv\" } } } } } },\n      { \"type\": \"dateCompare\", \"attributes\": { \"firstDate\": \"now\", \"operator\": \"GT\", \"positiveCondition\": \"terminated\", \"secondDate\": { \"type\": \"accountAttribute\", \"attributes\": { \"attributeName\": \"endDate\", \"sourceName\": \"hr-csv\" } } } },\n      { \"type\": \"dateCompare\", \"attributes\": { \"firstDate\": \"now\", \"operator\": \"GTE\", \"positiveCondition\": \"active\", \"secondDate\": { \"type\": \"accountAttribute\", \"attributes\": { \"attributeName\": \"startDate\", \"sourceName\": \"hr-csv\" } } } },\n      { \"type\": \"static\", \"attributes\": { \"value\": \"scheduled\" } }\n    ]\n  }\n}\n```",
+      "expected_output": "TL;DR ordered LCS decision tree based on dates. Flow diagram with all branches. Walkthrough explaining order matters (archived before terminated), ignoreErrors saves bad data, terminal static guarantees value."
+    },
+    {
+      "id": 4,
+      "name": "velocity-heavy-static",
+      "prompt": "Help me understand this — it's old and uses some Velocity I don't really get.\n\n```json\n{\n  \"name\": \"Identity - Generate Username\",\n  \"type\": \"static\",\n  \"attributes\": {\n    \"first\": { \"type\": \"identityAttribute\", \"attributes\": { \"name\": \"firstname\" } },\n    \"last\": { \"type\": \"identityAttribute\", \"attributes\": { \"name\": \"lastname\" } },\n    \"middle\": { \"type\": \"identityAttribute\", \"attributes\": { \"name\": \"middlename\" } },\n    \"value\": \"#if($middle && $middle != '')$first.substring(0,1).toLowerCase()$middle.substring(0,1).toLowerCase()$last.toLowerCase()#{else}$first.substring(0,1).toLowerCase()$last.toLowerCase()#end\"\n  }\n}\n```",
+      "expected_output": "TL;DR username = finitial + (middle initial if exists) + lastname all lowercase. Flow showing variable bindings and the if/else. Walkthrough flags Velocity multi-branch as anti-pattern, suggests refactor to conditional/concat."
+    },
+    {
+      "id": 5,
+      "name": "with-reference",
+      "prompt": "What does this do?\n\n```json\n{\n  \"name\": \"Identity - Map HR Country to ISO\",\n  \"type\": \"reference\",\n  \"attributes\": {\n    \"id\": \"Lookup - HR Country to ISO Alpha2\"\n  }\n}\n```",
+      "expected_output": "TL;DR delegates to another named transform. Explicitly says cannot fully explain without that other transform. Suggests pasting it for full picture."
+    }
+  ]
+}

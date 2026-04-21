@@ -1,0 +1,17 @@
+{
+  "name": "sailpoint",
+  "version": "0.1.0",
+  "description": "SailPoint ISC toolkit — transform authoring/debug/refactor/explain/compare skills, reporting agents (orphan tracker, aggregation metrics), and OSS Terraform provider maintenance (AnasSahel/terraform-provider-sailpoint-isc-community).",
+  "author": {
+    "name": "Anas Sahel"
+  },
+  "keywords": [
+    "sailpoint",
+    "iam",
+    "identity",
+    "transform",
+    "terraform",
+    "audit",
+    "provider"
+  ]
+}
