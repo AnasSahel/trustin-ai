@@ -13,11 +13,6 @@
       "name": "sailpoint",
       "source": "./plugins/sailpoint",
       "description": "SailPoint ISC toolkit — transform authoring skills, reporting agents, and OSS Terraform provider maintenance"
-    },
-    {
-      "name": "workflow",
-      "source": "./plugins/workflow",
-      "description": "Workflow slash commands for engineers — terraform plan risk review, bulk GitHub issue creation, and Dokploy log triage"
     }
   ]
 }
